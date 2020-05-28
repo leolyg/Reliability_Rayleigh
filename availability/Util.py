@@ -7,7 +7,7 @@ from availability.Parameter import Parameter
 
 #用来生成数据
 class Util:
-    def __init__(self, bs_file_name='../..//availability/data/bs_location.csv', ue_file_name='../../availability/data/ue_location.csv', subcarrier_file_name='../../availability/data/subcarrier_power.csv'):
+    def __init__(self, bs_file_name='availability/data/bs_location.csv', ue_file_name='availability/data/ue_location.csv', subcarrier_file_name='availability/data/subcarrier_power.csv'):
         self.bs_file_name = bs_file_name
         self.ue_file_name = ue_file_name
         self.subcarrier_file_name = subcarrier_file_name
