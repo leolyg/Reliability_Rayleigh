@@ -15,6 +15,7 @@ from keras.layers import LeakyReLU
 from keras.utils import to_categorical
 from availability.Availability_Rayleigh import Availability_Rayleigh
 from availability.Parameter import Parameter
+from DQN.AutoEncoder import AutoEncoder
 
 
 #分配UE
@@ -45,15 +46,24 @@ class UE_DQN:
         return ue_net
     def update_target_model(self):
         self.ue_target.set_weights(self.ue_net.get_weights())
-    
+
+    def data_preprocess(self,data,method):
+        if(method=='one_hot'):
+            return self.to_one_hot(data)
+        elif(method == 'AE'):
+            ##加入之前读取AE模型的代码
+            AE = AutoEncoder()
+            AE.load_model()
+            return AE.encoding(data)
+
     def train(self,train_x,train_y):
-        train_x = self.to_one_hot(train_x)
+        train_x = self.data_preprocess(train_x,'one_hot')
         return self.ue_net.fit(train_x,train_y,epochs=10, verbose=0)
     def predict(self,test_x):
-        test_x = self.to_one_hot(test_x)
+        test_x = self.data_preprocess(test_x,'one_hot')
         return self.ue_net.predict(test_x, verbose=0)
-    def target_predict(self,test_x):
-        test_x = self.to_one_hot(test_x)
+    def target_predict(self,test_x,):
+        test_x = self.data_preprocess(test_x,'one_hot')
         return self.ue_target.predict(test_x)
 
     def to_one_hot(self,state):      
@@ -65,6 +75,7 @@ class UE_DQN:
                 array = np.concatenate((array,to_categorical(ue_index,num_classes=self.expand_state)))
             result[i] =array
         return result
+
     def save(self):
         self.ue_net.save("DQN/save/dqn_ue_allocation.h5")
     
@@ -81,6 +92,7 @@ class Brain:
         self.memory_size = 512 #经验回放的回放池大小
         self.memory = np.zeros((self.memory_size,parameter.step_threshold*2 +2))
         self.ue_dqn = ue_dqn
+
     #训练完成后预测
     def predict(self,state):
         values = self.ue_dqn.predict(state.reshape(1,-1))
@@ -198,6 +210,9 @@ def run(parameter,episode):
                 reward = brain.get_reward(done,next_state)
                 if(reward==10):
                     reward_count = reward_count+1
+                    with open('candidate_sequence.csv', 'a', newline='') as f:
+                        writer = csv.writer(f)
+                        writer.writerow(next_state)
                 if(i%10==0):
                     print("episode: {}/{}, reward: {} epsilon {}".format(i, episode, reward, round(brain.e_greedy,3)))
                 # print(brain.current_state)
@@ -217,7 +232,7 @@ if __name__ == '__main__':
     print("----------begin------------")
     repeat_time = 1
     #for episode in [1000,2000,3000]:
-    scenarios = ['scenario0' , 'scenario1']
+    scenarios = [ 'scenario2']
     for episode in [3000]:
         for t in scenarios:
             all_reward = []

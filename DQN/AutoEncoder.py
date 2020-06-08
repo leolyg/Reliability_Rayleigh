@@ -141,9 +141,9 @@ def train_power_autoencoder():
 
 
 if __name__ == "__main__":
-    #training()
+    training()
     #train_power_autoencoder()
-    input = np.array([[15, 12, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]])
-    autoencoder = AutoEncoder(encoding_dim=6, input_shape=12, output_shape=12)
-    autoencoder.load_power_model()
-    print(autoencoder.encoder_model.predict(input))
+    # input = np.array([[15, 12, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]])
+    # autoencoder = AutoEncoder(encoding_dim=6, input_shape=12, output_shape=12)
+    # autoencoder.load_power_model()
+    # print(autoencoder.encoder_model.predict(input))
