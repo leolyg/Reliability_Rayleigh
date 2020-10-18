@@ -9,5 +9,3 @@
 
 availability.Parameter中定义了许多相关的实验参数.
 
-目前路径还有问题，后续会不断整理
-
