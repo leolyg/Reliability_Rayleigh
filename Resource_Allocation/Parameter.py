@@ -97,7 +97,7 @@ class Parameter:
         self.BS_wavelengh = [self.BS_wavelengh_1, self.BS_wavelengh_2]  # 波长数组
         self.BS_alpha = [self.BS_alpha_1, self.BS_alpha_2]  # alpha数组
         BW = 1e7;  # 带宽
-        N_0_dbm = -174 + 10 * math.log(10, BW)
+        N_0_dbm = -174 + 10 * math.log(BW,10)
         self.N_0 = 10 ** ((N_0_dbm - 30) / 10)
 
     ## dbm转化为瓦特
